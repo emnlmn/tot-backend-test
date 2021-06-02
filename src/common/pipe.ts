@@ -1,0 +1,1 @@
+export { pipe } from "fp-ts/lib/pipeable";
