@@ -1,11 +1,14 @@
-import { RTE } from '@app/common'
-import { identity, pipe } from 'fp-ts/lib/function'
-import { Decode } from 'io-ts'
+import { pipe, RTE } from '@app/common'
+import { Decode, Errors } from 'io-ts'
 
-export function validatePayload<I extends unknown, T>(payload: I, decoder: Decode<I, T>): RTE.ReaderTaskEither<unknown, unknown, T> {
+export type ValidationError = {
+    _tag: 'ValidationError',
+    error: string,
+}
+
+export function ValidatePayload<I extends unknown, T, E>(payload: I, decoder: Decode<I, T>, mapErrors: (e: Errors) => E): RTE.ReaderTaskEither<unknown, E, T> {
     return pipe(
-        RTE.of(payload),
-        RTE.map(decoder),
-        RTE.chainEitherKW(identity),
+        RTE.fromEither(decoder(payload)),
+        RTE.mapLeft(mapErrors),
     )
 }

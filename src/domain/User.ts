@@ -16,7 +16,7 @@ interface EmailBrand {
 
 export const email = t.brand(
     t.string,
-    (e): e is t.Branded<string, EmailBrand> => /^[A-Z0-9+_.-]+@[A-Z0-9.-]+$/.test(String(e)),
+    (e): e is t.Branded<string, EmailBrand> => /^.+@.+$/.test(String(e)),
     'Email'
 )
 

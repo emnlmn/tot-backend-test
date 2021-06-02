@@ -13,3 +13,23 @@ export function accessM<R, R1, E1, A>(f: (c: R) => RTE.ReaderTaskEither<R1, E1, 
         RTE.chainW(identity)
     )
 }
+
+export function provide<R>(r: R) {
+    return <R2, E, A>(
+        self: RTE.ReaderTaskEither<R & R2, E, A>
+    ): RTE.ReaderTaskEither<R2, E, A> => (r2) => self({ ...r2, ...r })
+}
+
+export function provideM<R3, E2, R>(mr: RTE.ReaderTaskEither<R3, E2, R>) {
+    return <R2, E, A>(
+        self: RTE.ReaderTaskEither<R & R2, E, A>
+    ): RTE.ReaderTaskEither<R2 & R3, E | E2, A> =>
+        pipe(
+            mr,
+            RTE.chainW((r) => provide(r)(self))
+        )
+}
+
+export function execute<E, A>(self: RTE.ReaderTaskEither<unknown, E, A>) {
+    return self({})
+}

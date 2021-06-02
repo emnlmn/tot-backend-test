@@ -1,5 +1,5 @@
 import { RTE } from "@app/common";
-import { Email, User } from "./user";
+import { Email, User } from "./User";
 
 export type UserExists = {
     _tag: 'UserExists',
