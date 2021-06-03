@@ -1,3 +1,23 @@
+# Instructions
+
+In order to easily run the project you should have `make` installed on your local machine
+
+To setup the project run:
+
+`make setup`
+
+You can get a shell into the node container running:
+
+`make sh`
+
+To execute the test suite run:
+
+`make test`
+
+To build the production image run:
+
+`make build-image`
+
 # Tot backend exercise: simple version
 
 We ask you to develop a RESTful API that manages users of an application.
@@ -18,20 +38,5 @@ We’ll use this exercise to evaluate your skills on software engineering, code 
 - A Dockerfile for the application and a docker-compose file to run the whole ecosystem;
 - OpenAPI documentation;
 - Feel free to add validation rules in addition to the required ones.
-
-# How to run
-In order to easily run the project you should have `make` installed on your local machine
-
-To setup the project run:
-`make setup`
-
-You can get a shell into the node container running:
-`make sh`
-
-To execute the test suite run:
-`make test`
-
-To build the production image run:
-`make build-image`
 
 
