@@ -1,32 +1,17 @@
-import { pipe } from '@app/common'
-import { RTE } from './common'
-import { CreateUserHandler } from './infrastructure/handler/CreateUserHandler'
-import { InitServer, WebServiceConfig } from './infrastructure/InitServer'
-import { ConnectToMysql, DatabaseConfig } from './infrastructure/ConnectToMysql'
-
-const webServiceConfig: WebServiceConfig = {
-    WebServiceConfig: {
-        port: 8080,
-        address: '0.0.0.0'
-    }
-}
-
-const databaseConfig: DatabaseConfig = {
-    DatabaseConfig: {
-        host: 'mysql',
-        user: 'dev',
-        password: 'dev',
-        database: 'test'
-    }
-}
+import { RTE, pipe } from '@app/common'
+import { CreateUserHandler } from '@app/infrastructure/handler/CreateUserHandler'
+import { InitServer } from '@app/infrastructure/InitServer'
+import { ConnectToMysql } from '@app/infrastructure/ConnectToMysql'
+import { ProvideDatabaseConfig } from '@app/infrastructure/config/ProvideDatabaseConfig'
+import { ProvideWebserviceConfig } from '@app/infrastructure/config/ProvideWebServiceConfig'
 
 const main = pipe(
     RTE.Do,
     RTE.bindW("dbConnection", () => ConnectToMysql),
     RTE.bindW("ws", () => InitServer),
     RTE.map(({ws, dbConnection}) => ws.post('/user', CreateUserHandler(dbConnection))),
-    RTE.provide(databaseConfig),
-    RTE.provide(webServiceConfig),
+    ProvideDatabaseConfig,
+    ProvideWebserviceConfig,
     RTE.execute
 )
 

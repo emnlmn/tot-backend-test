@@ -4,10 +4,11 @@
   "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node -r source-map-support/register lib/index.js",
+    "start": "node -r source-map-support/register lib/app.js",
     "build": "ttsc --p tsconfig.build.json",
     "test": "jest",
-    "dev": "node -r ./scripts/ts-node src/index.ts"
+    "dev": "node -r ./scripts/ts-node src/app.ts",
+    "db:migrate": "node -r ./scripts/ts-node scripts/migrations.js"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",

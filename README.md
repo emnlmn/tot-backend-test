@@ -19,4 +19,19 @@ We’ll use this exercise to evaluate your skills on software engineering, code 
 - OpenAPI documentation;
 - Feel free to add validation rules in addition to the required ones.
 
+# How to run
+In order to easily run the project you should have `make` installed on your local machine
+
+To setup the project run:
+`make setup`
+
+You can get a shell into the node container running:
+`make sh`
+
+To execute the test suite run:
+`make test`
+
+To build the production image run:
+`make build-image`
+
 

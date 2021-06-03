@@ -2,9 +2,11 @@ version: "3.8"
 
 services:
   node:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
+    image: node:16-alpine3.12
+    volumes: 
+    - ./:/home/project
+    working_dir: /home/project
+    command: yarn start
     ports:
     - "8080:8080"
 
