@@ -7,3 +7,14 @@ services:
       dockerfile: docker/Dockerfile
     ports:
     - "8080:8080"
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: test
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
+    ports:
+    - "3306:3006"
+    

@@ -9,7 +9,7 @@ export interface WebServiceConfig {
     }
 }
 
-export const initServer =
+export const InitServer =
     pipe(
         RTE.access(({ WebServiceConfig }: WebServiceConfig) => WebServiceConfig),
         RTE.chainW(ws => {

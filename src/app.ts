@@ -1,12 +1,8 @@
-import { FastifyReply, FastifyRequest } from 'fastify'
 import { pipe } from '@app/common'
-import { MapToValidationError } from './application/MapToValidationError'
-import { PersistUser } from './application/PersistUser'
-import { ValidatePayload } from './application/ValidatePayload'
-import { E, RTE } from './common'
-import { user } from './domain/User'
-import { UserRepository } from './domain/UserRepository'
-import { initServer, WebServiceConfig } from './infrastructure/ws'
+import { RTE } from './common'
+import { CreateUserHandler } from './infrastructure/handler/CreateUserHandler'
+import { InitServer, WebServiceConfig } from './infrastructure/InitServer'
+import { ConnectToMysql, DatabaseConfig } from './infrastructure/ConnectToMysql'
 
 const webServiceConfig: WebServiceConfig = {
     WebServiceConfig: {
@@ -15,37 +11,22 @@ const webServiceConfig: WebServiceConfig = {
     }
 }
 
-type Handler = (request: FastifyRequest, reply: FastifyReply) => void
-
-const createUserHandler: Handler = async (request, reply) => {
-    const handler = pipe(
-        ValidatePayload(request.body, user.decode, MapToValidationError),
-        RTE.chainW(PersistUser),
-        RTE.provide({} as UserRepository),
-        RTE.execute,        
-    )
-
-    const result = await handler()
-
-    if (E.isLeft(result)) {
-        const error = result.left
-        switch (error._tag) {
-            case 'UserExists':
-                reply.send(`User with email ${error.email} already exists`)
-                break;
-            case 'ValidationError':
-                reply.send(error.error)
-                break;
-        }
+const databaseConfig: DatabaseConfig = {
+    DatabaseConfig: {
+        host: 'mysql',
+        user: 'dev',
+        password: 'dev',
+        database: 'test'
     }
-
-    reply.send('User created successfully')
 }
 
 const main = pipe(
-    initServer,
+    RTE.Do,
+    RTE.bindW("dbConnection", () => ConnectToMysql),
+    RTE.bindW("ws", () => InitServer),
+    RTE.map(({ws, dbConnection}) => ws.post('/user', CreateUserHandler(dbConnection))),
+    RTE.provide(databaseConfig),
     RTE.provide(webServiceConfig),
-    RTE.map(ws => ws.post('/user', createUserHandler)),
     RTE.execute
 )
 
